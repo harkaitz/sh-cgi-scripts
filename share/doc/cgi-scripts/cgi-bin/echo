@@ -12,7 +12,7 @@ cgi_echo() {
     echo "# kaixo mundua"
     echo ""
     echo "Hau textu bat da."
-    return 400
+    return 0
 }
 if test @"${SCRNAME:-$(basename "$0")}" = @"echo"; then
     case "${1}" in

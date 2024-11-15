@@ -13,14 +13,14 @@ cgiw() {
         true
     else
         ret="$?"
-        case "${ret}" in
-            *)
-                echo "Content-Type: text/plain"
-                echo "Status: 400 Bad Request"
-                echo ""
-                cat "${tmp}"
-                ;;
-        esac
+        if test "${ret}" < 100; then
+            echo "Content-Type: text/plain"
+            echo "Status: 400 Bad Request"
+            echo ""
+            cat "${tmp}"
+        else
+            cat "${tmp}"
+        fi
         rm -f "${tmp}"
         return 0
     fi
