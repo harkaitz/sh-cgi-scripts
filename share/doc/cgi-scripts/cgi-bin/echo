@@ -1,0 +1,22 @@
+#!/bin/sh -e
+##:
+#h: Usage: GET /echo
+#h:
+#h: This CGI program shows an input and a button. When the button
+#h: is pressed the shown message updates.
+##:
+. cgiw
+. html_body
+. md2html
+cgi_echo() {
+    echo "# kaixo mundua"
+    echo ""
+    echo "Hau textu bat da."
+    return 400
+}
+if test @"${SCRNAME:-$(basename "$0")}" = @"echo"; then
+    case "${1}" in
+        -h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)         cgiw html_body -c md2html -c cgi_echo "$@"; exit 0;;
+    esac
+fi

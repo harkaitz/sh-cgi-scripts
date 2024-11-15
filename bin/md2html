@@ -1,0 +1,33 @@
+#!/bin/sh -e
+##:
+#h: Usage: md2html < MARKDOWN > HTML_BODY
+#h:        md2html -c COMMAND > HTML_BODY
+#h:
+#h: Convert markdowns to html using python (pip3 install markdown).
+##:
+md2html() {
+    local ops= ret=0 tmp
+    case "${1}" in -*) ops="${1}"; shift;; esac
+    case "${ops}" in
+        *c*)
+            tmp="$(mktemp)"
+            if "$@" > "${tmp}"; then
+                python3 -m markdown -x tables < "${tmp}"
+            else
+                ret="$?"
+            fi
+            rm -f "${tmp}"
+            ;;
+        *)
+            python3 -m markdown -x tables
+            ;;
+    esac
+    return "${ret}"
+}
+## -------------------------------------------------------------------
+if test @"${SCRNAME:-$(basename "$0")}" = @"md2html"; then
+    case "${1}" in
+        ''|-h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0" ;;
+        *)            md2html "$@"; exit 0 ;;
+    esac
+fi

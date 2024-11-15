@@ -1,0 +1,40 @@
+#!/bin/sh -e
+##:
+#h: Usage: cgiw COMMAND
+#h:
+#h: Execute command, if it fails print a CGI HTTP 400 error response.
+##:
+#Category: utilities
+#help: Execute a command, if it fails fill the CGI output.
+##:
+cgiw() {
+    local tmp="$(mktemp)" ret
+    if "$@" 2>"${tmp}" ; then
+        true
+    else
+        ret="$?"
+        case "${ret}" in
+            *)
+                echo "Content-Type: text/plain"
+                echo "Status: 400 Bad Request"
+                echo ""
+                cat "${tmp}"
+                ;;
+        esac
+        rm -f "${tmp}"
+        return 0
+    fi
+    rm -f "${tmp}"
+}
+## -------------------------------------------------------------------
+cgi_query() {
+    echo "${QUERY_STRING}" | tr '&' '\n' | sed -n "s|^${1}=||p"
+}
+
+## -------------------------------------------------------------------
+if test @"$(basename "$0")" = @"cgiw";then
+    case "${1}" in
+        ''|-h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0" ;;
+        *)            cgiw "$@"; exit 1                 ;;
+    esac
+fi

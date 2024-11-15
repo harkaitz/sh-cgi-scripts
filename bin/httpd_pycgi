@@ -1,0 +1,39 @@
+#!/bin/sh -e
+##:
+#h: Usage: httpd_pycgi [-p PORT (default 8080)] DIRECTORY
+#h:
+#h: Serve directory with a HTTP server using python's http.server
+#h: module. You should name CGI scripts as "DIRECTORY/cgi-bin/NAME"
+#h: and make them executable.
+##:
+httpd_pycgi() {
+    local OPTIND optopt pwd="$(pwd)" port=8080 directory=
+    
+    ## Parse command line arguments.
+    while getopts "p:" optopt; do
+        case $optopt in
+            p)  port="${OPTARG}";;
+            \?) return 1;;
+        esac
+    done
+    shift $(( $OPTIND - 1 ))
+    directory="$1"
+    if test ! -n "${directory}"; then
+        echo >&2 "error: Please specify a directory."
+        return 1
+    elif test ! -d "${directory}"; then
+        echo >&2 "error: ${directory}: The directory does not exist."
+        return 1
+    fi
+    
+    ## Execute server.
+    cd "${directory}"
+    python3 -m http.server --cgi --directory "$(pwd)" "${port}"
+    cd "${pwd}"
+}
+if test @"${SCRNAME:-$(basename "$0")}" = @"httpd_pycgi"; then
+    case "${1}" in
+        ''|-h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)            httpd_pycgi "$@"; exit 0;;
+    esac
+fi

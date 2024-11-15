@@ -1,0 +1,67 @@
+#!/bin/sh -e
+##:
+#h: Usage: html_body < HTML_BODY > HTML 
+#h:        html_body -c COMMAND  > HTML
+#h:
+#h: Place the input or the command's output between <html><body>...</body></html>.
+##:
+html_body() {
+    local ops= ret=0 tmp
+    case "${1}" in -*) ops="${1}"; shift;; esac
+    case "${ops}" in
+        *c*)
+            tmp="$(mktemp)"
+            if "$@" > "${tmp}"; then
+                html_body_r < "${tmp}"
+            else
+                ret="$?"
+            fi
+            rm -f "${tmp}"
+            ;;
+        *)
+            html_body_r
+            ;;
+    esac
+    return "${ret}"
+}
+html_body_r() {
+    cat <<-EOF
+	Content-Type: text/html
+	
+	<html>
+	  <head>
+	    <style>
+	      table {
+	        border-collapse: collapse;
+	        border: 1px solid black;
+	        width: 100%;
+	      }
+	      
+	      /* Style for table headers */
+	      th {
+	        border: 1px solid black;
+	        padding: 8px;
+	        text-align: left;
+	      }
+	      
+	      /* Style for table cells */
+	      td {
+	        border: 1px solid black;
+	        padding: 8px;
+	        text-align: left;
+	      }
+	    </style>
+	  </head>
+	  <body>
+	    $(cat)
+	  </body>
+	</html>
+	EOF
+}
+## -------------------------------------------------------------------
+if test @"${SCRNAME:-$(basename "$0")}" = @"html_body"; then
+    case "${1}" in
+        -h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
+        *)         html_body "$@"; exit 0;;
+    esac
+fi
