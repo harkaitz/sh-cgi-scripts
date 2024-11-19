@@ -17,6 +17,6 @@ cgi_echo() {
 if test @"${SCRNAME:-$(basename "$0")}" = @"echo"; then
     case "${1}" in
         -h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0";;
-        *)         cgiw html_body -c md2html -c cgi_echo "$@"; exit 0;;
+        *)         cgiw html_body -c md2html_py -c cgi_echo "$@"; exit 0;;
     esac
 fi

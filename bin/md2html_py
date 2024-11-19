@@ -5,7 +5,7 @@
 #h:
 #h: Convert markdowns to html using python (pip3 install markdown).
 ##:
-md2html() {
+md2html_py() {
     local ops= ret=0 tmp
     case "${1}" in -*) ops="${1}"; shift;; esac
     case "${ops}" in
@@ -25,9 +25,9 @@ md2html() {
     return "${ret}"
 }
 ## -------------------------------------------------------------------
-if test @"${SCRNAME:-$(basename "$0")}" = @"md2html"; then
+if test @"${SCRNAME:-$(basename "$0")}" = @"md2html_py"; then
     case "${1}" in
         ''|-h|--help) sed -n 's/^ *#h: \{0,1\}//p' "$0" ;;
-        *)            md2html "$@"; exit 0 ;;
+        *)            md2html_py "$@"; exit 0 ;;
     esac
 fi
