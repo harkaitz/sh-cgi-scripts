@@ -26,7 +26,7 @@ httpd_pycgi
     module. You should name CGI scripts as "DIRECTORY/cgi-bin/NAME"
     and make them executable.
 
-md2html
+md2html_py
 
     Usage: md2html < MARKDOWN > HTML_BODY
            md2html -c COMMAND > HTML_BODY
