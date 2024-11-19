@@ -24,7 +24,7 @@ install: install-sh
 install-sh:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp bin/cgiw $(DESTDIR)$(PREFIX)/bin
-	cp bin/md2html $(DESTDIR)$(PREFIX)/bin
+	cp bin/md2html_py $(DESTDIR)$(PREFIX)/bin
 	cp bin/html_body $(DESTDIR)$(PREFIX)/bin
 	cp bin/httpd_pycgi $(DESTDIR)$(PREFIX)/bin
 install: install-share
